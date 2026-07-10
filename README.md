@@ -49,7 +49,7 @@ Config——自定义配置
 
 # QCA-IPQ60XX-USB
 
-该工作流使用 `Kaucy/LibWrt` 的 `main-nss` 分支，启用 NSS、USB 主控以及 RNDIS、ECM、EEM、NCM、MBIM、QMI 等 USB 网络接入支持。默认主题为 Argon，主机名为 `YKWRT`，管理地址为 `192.168.88.1`，账号/密码为 `root` / `password`。DHCP 地址池随 LAN 网段生效，默认从 `192.168.88.100` 开始。
+该工作流使用 `Kaucy/LibWrt` 的 `main-nss` 分支，启用 NSS、USB 主控以及 RNDIS、ECM、EEM、NCM、MBIM、QMI 等 USB 网络接入支持。默认主题为 Argon，主机名和 Wi-Fi SSID 均为 `YKWRT`，管理地址为 `192.168.88.1`，账号/密码为 `root` / `password`。DHCP 地址池随 LAN 网段生效，默认从 `192.168.88.100` 开始。
 
 雅典娜屏幕控制包只加入 `jdcloud_re-cs-02` 的设备镜像；同一次多设备编译产生的其他固件不会包含该包。屏幕默认启用，仅显示闪烁冒号的 `小时:分钟`。
 

@@ -28,7 +28,7 @@ jobs:
       WRT_CONFIG: IPQ60XX-WIFI-YES-USB-YES
       WRT_THEME: argon
       WRT_NAME: YKWRT
-      WRT_SSID: OWRT
+      WRT_SSID: YKWRT
       WRT_WORD: 12345678
       WRT_IP: 192.168.88.1
       WRT_PW: password
