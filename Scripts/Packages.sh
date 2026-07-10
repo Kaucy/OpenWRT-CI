@@ -107,7 +107,12 @@ UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci
 #包内二进制本身已是 0755，无需在安装后再次 chmod。
 sed -i '/^define Package\/$(PKG_NAME)\/postinst$/,/^endef$/d' ./luci-app-subconverter/Makefile
 chmod 0755 ./luci-app-subconverter/root/etc/subconverter/subconverter
-if grep -q '^define Package/$(PKG_NAME)/postinst
+if grep -q 'postinst' ./luci-app-subconverter/Makefile; then
+	echo "ERROR: failed to remove unsafe luci-app-subconverter postinst"
+	exit 1
+fi
+test -x ./luci-app-subconverter/root/etc/subconverter/subconverter || exit 1
+
 #更新软件包版本
 UPDATE_VERSION() {
 	local PKG_NAME=$1
