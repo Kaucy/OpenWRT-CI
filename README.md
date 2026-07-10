@@ -16,7 +16,7 @@ https://github.com/immortalwrt/immortalwrt.git
 
 自用版：
 
-https://github.com/VIKINGYFY/immortalwrt.git
+https://github.com/Kaucy/LibWrt.git
 
 # U-BOOT
 
@@ -55,6 +55,3 @@ workflows——自定义CI配置
 Scripts——自定义脚本
 
 Config——自定义配置
-
-#
-[![Stargazers over time](https://starchart.cc/VIKINGYFY/OpenWRT-CI.svg?variant=adaptive)](https://starchart.cc/VIKINGYFY/OpenWRT-CI)
