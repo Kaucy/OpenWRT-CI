@@ -105,7 +105,7 @@ UPDATE_PACKAGE_PATH "luci-app-athena-led" "unraveloop/JDC-AX6600-Athena-LED-Cont
 UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci-app-subconverter"
 #上游 postinst 直接访问构建机的 /etc，APK 组装固件时会因目标不存在而中断。
 #包内二进制本身已是 0755，无需在安装后再次 chmod。
-sed -i '/^define Package\/$(PKG_NAME)\/postinst$/,/^endef$/d' ./luci-app-subconverter/Makefile
+sed -i '/^define Package.*postinst/,/^endef/d' ./luci-app-subconverter/Makefile
 chmod 0755 ./luci-app-subconverter/root/etc/subconverter/subconverter
 if grep -q 'postinst' ./luci-app-subconverter/Makefile; then
 	echo "ERROR: failed to remove unsafe luci-app-subconverter postinst"
