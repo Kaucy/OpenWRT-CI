@@ -4,7 +4,7 @@
 
 https://github.com/immortalwrt/immortalwrt.git
 
-自用版：
+自用版（[LibWrt](https://github.com/LiBwrt/LibWrt) Fork）：
 
 https://github.com/Kaucy/LibWrt.git
 
