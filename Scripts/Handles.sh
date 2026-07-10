@@ -4,6 +4,34 @@
 
 PKG_PATH="$GITHUB_WORKSPACE/wrt/package/"
 
+#仅为雅典娜 RE-CS-02 镜像追加点阵屏控制包。
+#配合 TARGET_PER_DEVICE_ROOTFS，使同一份配置生成的亚瑟 RE-SS-01 镜像不包含这些包。
+ATHENA_DEVICE_FILE="$GITHUB_WORKSPACE/wrt/target/linux/qualcommax/image/ipq60xx.mk"
+if [ ! -f "$ATHENA_DEVICE_FILE" ]; then
+	echo "ERROR: IPQ60xx device definition not found: $ATHENA_DEVICE_FILE"
+	exit 1
+fi
+
+sed -i '/^define Device\/jdcloud_re-cs-02$/,/^endef$/ {
+	/^[[:space:]]*DEVICE_PACKAGES :=/ {
+		/athena-led/! s/$/ athena-led luci-app-athena-led/
+	}
+}' "$ATHENA_DEVICE_FILE"
+
+if ! sed -n '/^define Device\/jdcloud_re-cs-02$/,/^endef$/p' "$ATHENA_DEVICE_FILE" | \
+	grep -q 'DEVICE_PACKAGES :=.*athena-led.*luci-app-athena-led'; then
+	echo "ERROR: failed to add Athena screen packages to jdcloud_re-cs-02"
+	exit 1
+fi
+
+if sed -n '/^define Device\/jdcloud_re-ss-01$/,/^endef$/p' "$ATHENA_DEVICE_FILE" | \
+	grep -qE 'athena-led|luci-app-athena-led'; then
+	echo "ERROR: Athena screen packages leaked into jdcloud_re-ss-01"
+	exit 1
+fi
+
+echo "Athena screen packages have been added to jdcloud_re-cs-02 only."
+
 #预置HomeProxy数据
 if [ -d *"homeproxy"* ]; then
 	echo " "
