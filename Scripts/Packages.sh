@@ -63,9 +63,6 @@ UPDATE_PACKAGE "openclash" "vernesong/OpenClash" "dev" "pkg"
 UPDATE_PACKAGE "passwall" "Openwrt-Passwall/openwrt-passwall" "main" "pkg"
 UPDATE_PACKAGE "passwall2" "Openwrt-Passwall/openwrt-passwall2" "main" "pkg"
 
-UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"
-
-#UPDATE_PACKAGE "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "main"
 UPDATE_PACKAGE "ddns-go" "sirpdboy/luci-app-ddns-go" "main"
 UPDATE_PACKAGE "diskman" "sbwml/luci-app-diskman" "main"
 UPDATE_PACKAGE "diskmanager" "4IceG/luci-app-mini-diskmanager" "main"
@@ -97,9 +94,12 @@ UPDATE_PACKAGE_PATH() {
 	rm -rf "$TMP_DIR"
 }
 
+#雅典娜屏幕：主分支 v2.5.0 尚无对应 Release 资产，固定到可完整下载的 v2.4.0
+UPDATE_PACKAGE_PATH "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "athena-led"
+UPDATE_PACKAGE_PATH "luci-app-athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "luci-app-athena-led"
+
 #订阅转换与 LuCI 文件传输
 UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci-app-subconverter"
-UPDATE_PACKAGE_PATH "subconverter" "kenzok8/small-package" "main" "subconverter"
 UPDATE_PACKAGE_PATH "luci-app-filetransfer" "kenzok8/small-package" "main" "other/lean/luci-app-filetransfer"
 
 #更新软件包版本
