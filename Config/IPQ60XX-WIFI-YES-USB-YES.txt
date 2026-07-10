@@ -69,8 +69,29 @@ CONFIG_PACKAGE_modemmanager-rpcd=y
 CONFIG_PACKAGE_luci-app-qmodem=y
 CONFIG_PACKAGE_luci-app-ddns-go=y
 CONFIG_PACKAGE_luci-app-mosdns=y
-CONFIG_PACKAGE_luci-app-tailscale=y
 CONFIG_PACKAGE_luci-app-watchcat=y
 CONFIG_PACKAGE_luci-app-sqm=y
 CONFIG_PACKAGE_sqm-scripts-nss=y
 CONFIG_PACKAGE_picocom=y
+
+#附加 LuCI 应用
+CONFIG_PACKAGE_luci-app-openclash=y
+CONFIG_PACKAGE_luci-app-frpc=y
+CONFIG_PACKAGE_luci-app-tailscale-community=y
+CONFIG_PACKAGE_luci-app-ttyd=y
+CONFIG_PACKAGE_luci-app-turboacc=y
+CONFIG_PACKAGE_TURBOACC_INCLUDE_NO_FASTPATH=y
+CONFIG_PACKAGE_TURBOACC_INCLUDE_FLOW_OFFLOADING=n
+CONFIG_PACKAGE_TURBOACC_INCLUDE_FAST_CLASSIFIER=n
+CONFIG_PACKAGE_TURBOACC_INCLUDE_SHORTCUT_FE_CM=n
+CONFIG_PACKAGE_luci-app-subconverter=y
+CONFIG_PACKAGE_subconverter=y
+CONFIG_PACKAGE_luci-app-filetransfer=y
+
+#简体中文支持；Subconverter 当前上游界面未提供独立 i18n 包
+CONFIG_PACKAGE_luci-i18n-openclash-zh-cn=y
+CONFIG_PACKAGE_luci-i18n-frpc-zh-cn=y
+CONFIG_PACKAGE_luci-i18n-tailscale-community-zh-cn=y
+CONFIG_PACKAGE_luci-i18n-ttyd-zh-cn=y
+CONFIG_PACKAGE_luci-i18n-turboacc-zh-cn=y
+CONFIG_PACKAGE_luci-i18n-filetransfer-zh-cn=y
