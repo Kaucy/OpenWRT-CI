@@ -232,12 +232,6 @@ jobs:
           tag_name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
           files: ./wrt/upload/*.*
           body: |
-            这是个平台固件包，内含多个设备！
-            请注意选择你需要的设备固件！
-            不要问，刷就完事了！
-
-            全系带开源硬件加速，别问了！
-
             源码：${{env.WRT_REPO}}
             分支：${{env.WRT_BRANCH}}
             提交：${{env.WRT_HASH}}
@@ -253,3 +247,23 @@ jobs:
 
             内核版本：${{env.WRT_KVER}}
             插件列表：${{env.WRT_LIST}}
+
+            QCA-IPQ60XX-USB 设备型号对照：
+            | 固件设备名 | 产品型号/名称 |
+            | --- | --- |
+            | 8devices_mango-dvk | 8devices Mango-DVK |
+            | alfa-network_ap120c-ax | ALFA Network AP120C-AX |
+            | cambiumnetworks_xe3-4 | Cambium Networks XE3-4 |
+            | glinet_gl-ax1800 | GL.iNet GL-AX1800 (Flint) |
+            | glinet_gl-axt1800 | GL.iNet GL-AXT1800 (Slate AX) |
+            | jdcloud_re-cs-02 | 京东云雅典娜 AX6600 (RE-CS-02) |
+            | jdcloud_re-cs-07 | 京东云 RE-CS-07 |
+            | jdcloud_re-ss-01 | 京东云亚瑟 AX1800 Pro (RE-SS-01) |
+            | kt_ar06-012h | KT AR06-012H |
+            | lg_gapd-7500 | LG GAPD-7500 |
+            | link_nn6000-v1 | LiNK NN6000 V1 |
+            | link_nn6000-v2 | LiNK NN6000 V2 |
+            | linksys_mr7350 | Linksys MR7350 |
+            | linksys_mr7500 | Linksys MR7500 |
+            | qihoo_360v6 | 360 V6 |
+            | yuncore_fap650 | YunCore FAP650 |
