@@ -77,9 +77,28 @@ UPDATE_PACKAGE "qmodem" "FUjr/QModem" "main"
 #默认使用 vendor QMI 驱动和 quectel-CM-5G-M，不影响 USB QMI/MBIM/NCM 功能。
 sed -i '/GENERIC_MHI_PCIe_DRIVER:kmod-mhi-wwan \\/d' ./QModem/application/qmodem/Makefile
 sed -i '/USING_QWRT_QUECTEL_CM_5G:quectel-CM-5G \\/d' ./QModem/application/qmodem/Makefile
+#QModem 放到“网络”菜单，并统一所有控制器、跳转和前端链接的路径。
+QMODEM_CONTROLLER="./QModem/luci/luci-app-qmodem/luasrc/controller/qmodem.lua"
+if [ ! -f "$QMODEM_CONTROLLER" ]; then
+	echo "ERROR: QModem controller not found: $QMODEM_CONTROLLER"
+	exit 1
+fi
+sed -i '/entry({"admin", "modem"}, firstchild()/d' "$QMODEM_CONTROLLER"
+find ./QModem/luci -type f \
+	\( -name '*.lua' -o -name '*.htm' -o -name '*.js' -o -name '*.json' \) \
+	-exec sed -i \
+		-e 's/"admin", "modem"/"admin", "network"/g' \
+		-e 's#admin/modem/qmodem#admin/network/qmodem#g' {} +
+sed -i 's/luci\.i18n\.translate("QModem")/luci.i18n.translate("Qmodem 模块管理")/' "$QMODEM_CONTROLLER"
+if ! grep -q 'entry({"admin", "network", "qmodem"}.*Qmodem 模块管理' "$QMODEM_CONTROLLER"; then
+	echo "ERROR: failed to move and rename the QModem menu"
+	exit 1
+fi
 UPDATE_PACKAGE "quickfile" "sbwml/luci-app-quickfile" "main"
 UPDATE_PACKAGE "timecontrol" "sirpdboy/luci-app-timecontrol" "main"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "gecoosac luci-app-timewol luci-app-wolplus"
+#不再提供集客 AC 控制器。
+find ./packages -type d -iname '*gecoosac*' -prune -exec rm -rf {} + 2>/dev/null || true
 UPDATE_PACKAGE "vnt" "lmq8267/luci-app-vnt" "main"
 
 #从仓库中的指定目录提取单个软件包，避免引入大杂烩仓库的其它包
@@ -97,21 +116,42 @@ UPDATE_PACKAGE_PATH() {
 	rm -rf "$TMP_DIR"
 }
 
-#雅典娜屏幕：主分支 v2.5.0 尚无对应 Release 资产，固定到可完整下载的 v2.4.0
-UPDATE_PACKAGE_PATH "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "athena-led"
-UPDATE_PACKAGE_PATH "luci-app-athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "luci-app-athena-led"
+#雅典娜屏幕只用于 QCA-IPQ60XX-USB；固定到具备完整 Release 资产的 v2.4.0。
+if [ "$WRT_CONFIG" = "IPQ60XX-WIFI-YES-USB-YES" ]; then
+	UPDATE_PACKAGE_PATH "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "athena-led"
+	UPDATE_PACKAGE_PATH "luci-app-athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "luci-app-athena-led"
 
-#订阅转换；文件管理使用 LibWrt feeds 内置的 luci-app-filemanager
-UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci-app-subconverter"
-#上游 postinst 直接访问构建机的 /etc，APK 组装固件时会因目标不存在而中断。
-#包内二进制本身已是 0755，无需在安装后再次 chmod。
-sed -i '/^define Package.*postinst/,/^endef/d' ./luci-app-subconverter/Makefile
-chmod 0755 ./luci-app-subconverter/root/etc/subconverter/subconverter
-if grep -q 'postinst' ./luci-app-subconverter/Makefile; then
-	echo "ERROR: failed to remove unsafe luci-app-subconverter postinst"
-	exit 1
+	#默认启用，只保留单一“小时:分钟”页面，冒号使用 timeBlink 模式闪烁。
+	ATHENA_CONFIG="./athena-led/files/athena_led.config"
+	ATHENA_MAKEFILE="./athena-led/Makefile"
+	if [ ! -f "$ATHENA_CONFIG" ] || [ ! -f "$ATHENA_MAKEFILE" ]; then
+		echo "ERROR: Athena LED package layout changed"
+		exit 1
+	fi
+	sed -i \
+		-e "s/option enabled '0'/option enabled '1'/" \
+		-e "s/option profile_mode 'multi'/option profile_mode 'single'/" \
+		-e '/^config multi_module$/,/^[[:space:]]*$/d' \
+		-e '/^config single_module$/,/^[[:space:]]*$/d' \
+		"$ATHENA_CONFIG"
+	cat >> "$ATHENA_CONFIG" <<'EOF'
+
+config single_module
+    option module 'time_group'
+    option param 'timeBlink'
+    option duration '86400'
+EOF
+	#上游自定义 postinst 在制作镜像时不会启用服务，直接写入 rc.d 启动链接。
+	sed -i '/$(INSTALL_CONF) \.\/files\/athena_led.config/a\\\t$(INSTALL_DIR) $(1)/etc/rc.d\n\tln -sf ../init.d/athena_led $(1)/etc/rc.d/S99athena_led' "$ATHENA_MAKEFILE"
+	if ! grep -q "option enabled '1'" "$ATHENA_CONFIG" || \
+		! grep -q "option param 'timeBlink'" "$ATHENA_CONFIG" || \
+		[ "$(grep -c '^config single_module$' "$ATHENA_CONFIG")" -ne 1 ] || \
+		grep -q '^config multi_module$' "$ATHENA_CONFIG" || \
+		! grep -q 'S99athena_led' "$ATHENA_MAKEFILE"; then
+		echo "ERROR: failed to apply Athena LED defaults"
+		exit 1
+	fi
 fi
-test -x ./luci-app-subconverter/root/etc/subconverter/subconverter || exit 1
 
 #更新软件包版本
 UPDATE_VERSION() {

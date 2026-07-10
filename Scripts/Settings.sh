@@ -31,6 +31,32 @@ sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
 #修改默认主机名
 sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
 
+#仅为 QCA-IPQ60XX-USB 预置用户指定的 root 密码；其它工作流仍保持原有登录策略。
+if [ "$WRT_CONFIG" = "IPQ60XX-WIFI-YES-USB-YES" ]; then
+	SHADOW_FILE="./package/base-files/files/etc/shadow"
+	if [ ! -f "$SHADOW_FILE" ]; then
+		echo "ERROR: shadow template not found: $SHADOW_FILE"
+		exit 1
+	fi
+	PW_HASH=$(openssl passwd -6 -salt YKWRT "$WRT_PW")
+	sed -i "s#^root:[^:]*:#root:$PW_HASH:#" "$SHADOW_FILE"
+	grep -q '^root:\$6\$YKWRT\$' "$SHADOW_FILE" || {
+		echo "ERROR: failed to set the default root password"
+		exit 1
+	}
+fi
+
+#rootfs 生成 distfeeds.list 后逐项探测 USTC APK 镜像。
+APK_MIRROR_SCRIPT="./scripts/replace-apk-mirrors.sh"
+APK_BASE_FILES="./package/base-files/Makefile"
+cp "$GITHUB_WORKSPACE/Files/replace-apk-mirrors.sh" "$APK_MIRROR_SCRIPT"
+chmod 0755 "$APK_MIRROR_SCRIPT"
+sed -i '/VERSION_SED_SCRIPT.*distfeeds\.list/a\\\t$(TOPDIR)/scripts/replace-apk-mirrors.sh $(1)/etc/apk/repositories.d/distfeeds.list' "$APK_BASE_FILES"
+if ! grep -q 'replace-apk-mirrors.sh.*distfeeds.list' "$APK_BASE_FILES"; then
+	echo "ERROR: failed to install selective APK mirror hook"
+	exit 1
+fi
+
 #配置文件修改
 echo "CONFIG_PACKAGE_luci=y" >> ./.config
 echo "CONFIG_LUCI_LANG_zh_Hans=y" >> ./.config

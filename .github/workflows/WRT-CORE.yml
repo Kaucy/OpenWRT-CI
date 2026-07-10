@@ -240,6 +240,7 @@ jobs:
             平台：${{env.WRT_TARGET}}
 
             登录地址：${{env.WRT_IP}}
+            登录账号：root
             登录密码：${{env.WRT_PW}}
 
             WIFI名称：${{env.WRT_SSID}}
