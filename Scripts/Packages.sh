@@ -97,13 +97,6 @@ UPDATE_PACKAGE_PATH() {
 	rm -rf "$TMP_DIR"
 }
 
-#TurboACC 使用支持 QCA NSS ECM 的新版界面，并补入仓库内附带的简体中文翻译
-UPDATE_PACKAGE_PATH "luci-app-turboacc" "mufeng05/turboacc" "main" "custom/luci-app-turboacc"
-git clone --depth=1 --single-branch --branch main "https://github.com/mufeng05/turboacc.git" turboacc-language
-mkdir -p ./luci-app-turboacc/po/zh_Hans
-cp -rf ./turboacc-language/lede/luci-app-turboacc/po/zh_Hans/. ./luci-app-turboacc/po/zh_Hans/
-rm -rf ./turboacc-language
-
 #订阅转换与 LuCI 文件传输
 UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci-app-subconverter"
 UPDATE_PACKAGE_PATH "subconverter" "kenzok8/small-package" "main" "subconverter"
