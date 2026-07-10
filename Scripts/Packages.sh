@@ -82,6 +82,33 @@ UPDATE_PACKAGE "timecontrol" "sirpdboy/luci-app-timecontrol" "main"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "gecoosac luci-app-timewol luci-app-wolplus"
 UPDATE_PACKAGE "vnt" "lmq8267/luci-app-vnt" "main"
 
+#从仓库中的指定目录提取单个软件包，避免引入大杂烩仓库的其它包
+UPDATE_PACKAGE_PATH() {
+	local PKG_NAME=$1
+	local PKG_REPO=$2
+	local PKG_BRANCH=$3
+	local PKG_PATH=$4
+	local TMP_DIR="package-${PKG_NAME}"
+
+	rm -rf "$PKG_NAME" "$TMP_DIR"
+	find ../feeds/luci/ ../feeds/packages/ -maxdepth 3 -type d -iname "*$PKG_NAME*" -prune -exec rm -rf {} + 2>/dev/null
+	git clone --depth=1 --single-branch --branch "$PKG_BRANCH" "https://github.com/$PKG_REPO.git" "$TMP_DIR"
+	cp -rf "$TMP_DIR/$PKG_PATH" "./$PKG_NAME"
+	rm -rf "$TMP_DIR"
+}
+
+#TurboACC 使用支持 QCA NSS ECM 的新版界面，并补入仓库内附带的简体中文翻译
+UPDATE_PACKAGE_PATH "luci-app-turboacc" "mufeng05/turboacc" "main" "custom/luci-app-turboacc"
+git clone --depth=1 --single-branch --branch main "https://github.com/mufeng05/turboacc.git" turboacc-language
+mkdir -p ./luci-app-turboacc/po/zh_Hans
+cp -rf ./turboacc-language/lede/luci-app-turboacc/po/zh_Hans/. ./luci-app-turboacc/po/zh_Hans/
+rm -rf ./turboacc-language
+
+#订阅转换与 LuCI 文件传输
+UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci-app-subconverter"
+UPDATE_PACKAGE_PATH "subconverter" "kenzok8/small-package" "main" "subconverter"
+UPDATE_PACKAGE_PATH "luci-app-filetransfer" "kenzok8/small-package" "main" "other/lean/luci-app-filetransfer"
+
 #更新软件包版本
 UPDATE_VERSION() {
 	local PKG_NAME=$1
