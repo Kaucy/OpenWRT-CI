@@ -68,12 +68,15 @@ UPDATE_PACKAGE "diskman" "sbwml/luci-app-diskman" "main"
 UPDATE_PACKAGE "diskmanager" "4IceG/luci-app-mini-diskmanager" "main"
 UPDATE_PACKAGE "easytier" "EasyTier/luci-app-easytier" "main"
 UPDATE_PACKAGE "mosdns" "sbwml/luci-app-mosdns" "v5" "" "v2dat"
-UPDATE_PACKAGE "netspeedtest" "sirpdboy/netspeedtest" "main" "" "homebox ookla-speedtest"
 UPDATE_PACKAGE "netwizard" "sirpdboy/luci-app-netwizard" "main"
 UPDATE_PACKAGE "openlist2" "sbwml/luci-app-openlist2" "main"
 UPDATE_PACKAGE "partexp" "sirpdboy/luci-app-partexp" "main"
 UPDATE_PACKAGE "qbittorrent" "sbwml/luci-app-qbittorrent" "master" "" "qt6base qt6tools rblibtorrent"
 UPDATE_PACKAGE "qmodem" "FUjr/QModem" "main"
+#QModem 上游保留了两个当前源码树不存在的非默认可选依赖，删除声明以避免包扫描警告。
+#默认使用 vendor QMI 驱动和 quectel-CM-5G-M，不影响 USB QMI/MBIM/NCM 功能。
+sed -i '/GENERIC_MHI_PCIe_DRIVER:kmod-mhi-wwan \\/d' ./QModem/application/qmodem/Makefile
+sed -i '/USING_QWRT_QUECTEL_CM_5G:quectel-CM-5G \\/d' ./QModem/application/qmodem/Makefile
 UPDATE_PACKAGE "quickfile" "sbwml/luci-app-quickfile" "main"
 UPDATE_PACKAGE "timecontrol" "sirpdboy/luci-app-timecontrol" "main"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "gecoosac luci-app-timewol luci-app-wolplus"
@@ -98,9 +101,8 @@ UPDATE_PACKAGE_PATH() {
 UPDATE_PACKAGE_PATH "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "athena-led"
 UPDATE_PACKAGE_PATH "luci-app-athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "v2.4.0" "luci-app-athena-led"
 
-#订阅转换与 LuCI 文件传输
+#订阅转换；文件管理使用 LibWrt feeds 内置的 luci-app-filemanager
 UPDATE_PACKAGE_PATH "luci-app-subconverter" "kenzok8/small-package" "main" "luci-app-subconverter"
-UPDATE_PACKAGE_PATH "luci-app-filetransfer" "kenzok8/small-package" "main" "other/lean/luci-app-filetransfer"
 
 #更新软件包版本
 UPDATE_VERSION() {
