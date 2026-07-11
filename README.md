@@ -49,11 +49,11 @@ Config——自定义配置
 
 # QCA-IPQ60XX-USB
 
-该工作流使用 `Kaucy/LibWrt` 的 `main-nss` 分支，启用 NSS、USB 主控以及 RNDIS、ECM、EEM、NCM、MBIM、QMI 等 USB 网络接入支持。默认主题为 Argon，主机名和 Wi-Fi SSID 均为 `YKWRT`，管理地址为 `192.168.88.1`，账号/密码为 `root` / `password`。DHCP 地址池随 LAN 网段生效，默认从 `192.168.88.100` 开始。
+该工作流每次启动时自动选择 `Kaucy/LibWrt` 最新的 `vX.Y.Z` 正式 tag，并校验固件版本和 `releases/X.Y.Z` APK 软件源版本一致，不再使用滚动的 `main-nss` 与 `snapshots`。同时启用 NSS、USB 主控以及 RNDIS、ECM、EEM、NCM、MBIM、QMI 等 USB 网络接入支持。默认主题为 Argon，主机名和 Wi-Fi SSID 均为 `YKWRT`，管理地址为 `192.168.88.1`，账号/密码为 `root` / `password`。DHCP 地址池随 LAN 网段生效，默认从 `192.168.88.100` 开始。
 
 雅典娜屏幕控制包只加入 `jdcloud_re-cs-02` 的设备镜像；同一次多设备编译产生的其他固件不会包含该包。屏幕默认启用，仅显示闪烁冒号的 `小时:分钟`。
 
-APK 源会在 CI 生成 `distfeeds.list` 后逐项检查 USTC 镜像；USTC 存在对应 `packages.adb` 时才替换，缺失或暂时不可访问的仓库继续使用 ImmortalWrt 官方源。当前 USTC 的 ImmortalWrt snapshots 目录可能尚未同步，因此不会盲目替换为 404 地址。
+APK 源固定为该 tag 对应的 ImmortalWrt `releases/X.Y.Z`。CI 生成 `distfeeds.list` 后逐项检查同版本 USTC 镜像；USTC 存在对应 `packages.adb` 时才替换，缺失或暂时不可访问的仓库继续使用同版本 ImmortalWrt 官方源。
 
 ## 设备型号对照表
 
