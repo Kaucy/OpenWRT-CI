@@ -141,14 +141,18 @@ if [ -d *"luci-app-mini-diskmanager"* ]; then
 	cd $PKG_PATH && echo "mini-diskmanager has been fixed!"
 fi
 
-#修复TailScale配置文件冲突
+#校验 Tailscale 核心包必须安装 UCI 配置和 procd 启动脚本。
 TS_FILE=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/tailscale/Makefile")
 if [ -f "$TS_FILE" ]; then
-	echo " "
-
-	sed -i '/\/files/d' $TS_FILE
-
-	cd $PKG_PATH && echo "tailscale has been fixed!"
+	grep -q 'tailscale\.init.*etc/init.d/tailscale' "$TS_FILE" || {
+		echo "ERROR: Tailscale init script install rule is missing"
+		exit 1
+	}
+	grep -q 'tailscale\.conf.*etc/config/tailscale' "$TS_FILE" || {
+		echo "ERROR: Tailscale UCI config install rule is missing"
+		exit 1
+	}
+	echo "Tailscale package contents have been verified."
 fi
 
 #修复Rust编译失败
