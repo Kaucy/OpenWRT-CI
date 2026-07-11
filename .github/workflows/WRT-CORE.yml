@@ -174,6 +174,15 @@ jobs:
 
           $GITHUB_WORKSPACE/Scripts/Settings.sh
 
+          # 防止脚本把文本“\\t”误写到 Makefile 行首；Make 命令必须以真实 Tab 开头。
+          BAD_MAKE_LINES=$(find . -type f \( -name 'Makefile' -o -name '*.mk' \) \
+            -exec awk 'substr($0, 1, 2) == "\\t" { print FILENAME ":" FNR ":" $0 }' {} +)
+          if [ -n "$BAD_MAKE_LINES" ]; then
+            echo "ERROR: literal \\t found at the beginning of Makefile lines:"
+            echo "$BAD_MAKE_LINES"
+            exit 1
+          fi
+
           make defconfig -j$(nproc) && make clean -j$(nproc)
 
       - name: Download Packages
