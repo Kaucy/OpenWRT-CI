@@ -34,6 +34,9 @@ on:
       WRT_BRANCH:
         required: true
         type: string
+      WRT_VERSION:
+        required: false
+        type: string
       WRT_SOURCE:
         required: true
         type: string
@@ -55,6 +58,7 @@ env:
   WRT_PW: ${{inputs.WRT_PW}}
   WRT_REPO: ${{inputs.WRT_REPO}}
   WRT_BRANCH: ${{inputs.WRT_BRANCH}}
+  WRT_VERSION: ${{inputs.WRT_VERSION}}
   WRT_SOURCE: ${{inputs.WRT_SOURCE}}
   WRT_PACKAGE: ${{inputs.WRT_PACKAGE}}
   WRT_TEST: ${{inputs.WRT_TEST}}
@@ -101,6 +105,19 @@ jobs:
           git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_REPO ./wrt/
 
           cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
+
+          if [ -n "$WRT_VERSION" ]; then
+            SOURCE_VERSION=$(sed -n 's/^VERSION_NUMBER:=$(if $(VERSION_NUMBER),$(VERSION_NUMBER),\([^)]*\)).*/\1/p' ./include/version.mk)
+            SOURCE_REPO=$(sed -n 's/^VERSION_REPO:=$(if $(VERSION_REPO),$(VERSION_REPO),\(.*\)).*/\1/p' ./include/version.mk)
+            if [ "$SOURCE_VERSION" != "$WRT_VERSION" ] || [[ "$SOURCE_REPO" != *"/releases/$WRT_VERSION" ]]; then
+              echo "ERROR: LibWrt tag/source mismatch"
+              echo "Expected version: $WRT_VERSION"
+              echo "Source version: $SOURCE_VERSION"
+              echo "Source repository: $SOURCE_REPO"
+              exit 1
+            fi
+            echo "Pinned APK repository version: $WRT_VERSION"
+          fi
 
           # GitHub Action 移除国内下载源
           PROJECT_MIRRORS_FILE="./scripts/projectsmirrors.json"
