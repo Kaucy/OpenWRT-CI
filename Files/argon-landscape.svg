@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="Mountain lake landscape at dawn">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16283f"/>
+      <stop offset="0.48" stop-color="#4d8394"/>
+      <stop offset="1" stop-color="#e8b98e"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#477d86"/>
+      <stop offset="1" stop-color="#102d3a"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop offset="0" stop-color="#fff4cd" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ffd18e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <circle cx="1440" cy="330" r="220" fill="url(#sun)"/>
+  <path d="M0 690 280 430 500 625 760 310 1060 650 1300 405 1570 665 1760 480 1920 650 1920 800 0 800Z" fill="#294b59"/>
+  <path d="M0 735 360 555 590 720 910 480 1215 725 1530 540 1920 735 1920 850 0 850Z" fill="#183846"/>
+  <path d="M0 780 440 660 720 790 1060 610 1370 790 1650 655 1920 770 1920 900 0 900Z" fill="#102d39"/>
+  <rect y="790" width="1920" height="290" fill="url(#lake)"/>
+  <path d="M0 845 Q340 800 690 845 T1370 845 T1920 840" fill="none" stroke="#b8d4ce" stroke-opacity="0.24" stroke-width="5"/>
+  <path d="M0 925 Q360 875 730 925 T1450 925 T1920 915" fill="none" stroke="#d5e4da" stroke-opacity="0.13" stroke-width="4"/>
+  <path d="M0 1080V900L180 820 350 1080ZM1920 1080V875L1740 805 1570 1080Z" fill="#0a222d"/>
+</svg>
