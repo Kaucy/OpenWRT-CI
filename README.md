@@ -53,7 +53,7 @@ Config——自定义配置
 
 雅典娜屏幕控制包只加入 `jdcloud_re-cs-02` 的设备镜像；同一次多设备编译产生的其他固件不会包含该包。屏幕默认启用，仅显示闪烁冒号的 `小时:分钟`。
 
-APK 源固定为该 tag 对应的 ImmortalWrt `releases/X.Y.Z`。CI 生成 `distfeeds.list` 后逐项检查同版本 USTC 镜像；USTC 存在对应 `packages.adb` 时才替换，缺失或暂时不可访问的仓库继续使用同版本 ImmortalWrt 官方源。
+APK 源固定为该 tag 对应的 ImmortalWrt `releases/X.Y.Z`。CI 生成 `distfeeds.list` 后逐项检查同版本 USTC 镜像；USTC 存在对应 `packages.adb` 时才替换，缺失或暂时不可访问的官方仓库继续使用同版本 ImmortalWrt 官方源。ImmortalWrt Release 未发布的第三方 `nss_packages` 与 `sqm_scripts_nss` 仓库地址会被移除，相关软件包仍预装在固件中。
 
 ## 设备型号对照表
 
