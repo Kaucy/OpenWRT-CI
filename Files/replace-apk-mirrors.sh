@@ -11,6 +11,9 @@ TMP="${REPOSITORIES}.tmp"
 
 while IFS= read -r repository || [ -n "$repository" ]; do
 	case "$repository" in
+		*/nss_packages/packages.adb|*/sqm_scripts_nss/packages.adb)
+			echo "APK feed unavailable for ImmortalWrt releases, omitted: $repository"
+			;;
 		"$OFFICIAL_PREFIX"/*)
 			candidate="$USTC_PREFIX/${repository#"$OFFICIAL_PREFIX"/}"
 			if curl -fsSL --retry 1 --connect-timeout 5 --max-time 15 \
