@@ -7,6 +7,25 @@ PKG_PATH="$GITHUB_WORKSPACE/wrt/package/"
 #仅为 QCA-IPQ60XX-USB 中的雅典娜 RE-CS-02 镜像追加点阵屏控制包。
 #配合 TARGET_PER_DEVICE_ROOTFS，使同一次编译产生的其他设备镜像不包含这些包。
 if [ "$WRT_CONFIG" = "IPQ60XX-WIFI-YES-USB-YES" ]; then
+	ATHENA_CONFIG="$PKG_PATH/athena-led/files/athena_led.config"
+	if [ ! -f "$ATHENA_CONFIG" ]; then
+		echo "ERROR: Athena LED default configuration not found: $ATHENA_CONFIG"
+		exit 1
+	fi
+	#默认熄灭机身四枚状态灯；LuCI 中对应四个“熄灭”选项均为已勾选。
+	sed -i \
+		-e "s/option disable_led_clock '0'/option disable_led_clock '1'/" \
+		-e "s/option disable_led_medal '0'/option disable_led_medal '1'/" \
+		-e "s/option disable_led_up '0'/option disable_led_up '1'/" \
+		-e "s/option disable_led_down '0'/option disable_led_down '1'/" \
+		"$ATHENA_CONFIG"
+	for option in clock medal up down; do
+		grep -q "option disable_led_${option} '1'" "$ATHENA_CONFIG" || {
+			echo "ERROR: failed to disable Athena ${option} LED by default"
+			exit 1
+		}
+	done
+
 	ATHENA_DEVICE_FILE="$GITHUB_WORKSPACE/wrt/target/linux/qualcommax/image/ipq60xx.mk"
 	if [ ! -f "$ATHENA_DEVICE_FILE" ]; then
 		echo "ERROR: IPQ60xx device definition not found: $ATHENA_DEVICE_FILE"
@@ -75,11 +94,31 @@ if [ -d *"homeproxy"* ]; then
 	cd $PKG_PATH && echo "homeproxy date has been updated!"
 fi
 
-#修改argon主题字体和颜色
+#修改 Argon 默认背景、品牌字体和颜色。
 if [ -d *"luci-theme-argon"* ]; then
 	echo " " && cd ./luci-theme-argon/
 
-	sed -i "s/primary '.*'/primary '#31a1a1'/; s/'0.2'/'0.5'/; s/'none'/'bing'/; s/'600'/'normal'/" ./luci-app-argon-config/root/etc/config/argon
+	ARGON_CONFIG=./luci-app-argon-config/root/etc/config/argon
+	ARGON_THEME=./luci-theme-argon
+	ARGON_LOGIN="$ARGON_THEME/ucode/template/themes/argon/sysauth.ut"
+	ARGON_CSS="$ARGON_THEME/htdocs/luci-static/argon/css/cascade.css"
+	ARGON_IMAGE="$ARGON_THEME/htdocs/luci-static/argon/img/ykwrt-landscape.svg"
+
+	sed -i \
+		-e "s/primary '.*'/primary '#31a1a1'/" \
+		-e "s/transparency '0.2'/transparency '0.5'/" \
+		-e "s/online_wallpaper '.*'/online_wallpaper 'none'/" \
+		-e "s/font_weight '600'/font_weight 'normal'/" "$ARGON_CONFIG"
+	cp "$GITHUB_WORKSPACE/Files/argon-landscape.svg" "$ARGON_IMAGE"
+	sed -i 's#/img/bg\.webp#/img/ykwrt-landscape.svg#g' "$ARGON_LOGIN"
+	sed -i 's#font-family: "Sniglet-Regular";#font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;#g' "$ARGON_CSS"
+
+	if ! grep -q "online_wallpaper 'none'" "$ARGON_CONFIG" || \
+		! grep -q 'ykwrt-landscape.svg' "$ARGON_LOGIN" || \
+		grep -q 'font-family: "Sniglet-Regular"' "$ARGON_CSS"; then
+		echo "ERROR: failed to apply YKWRT Argon defaults"
+		exit 1
+	fi
 
 	cd $PKG_PATH && echo "theme-argon has been fixed!"
 fi
