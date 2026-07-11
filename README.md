@@ -59,7 +59,6 @@ APK 源固定为该 tag 对应的 ImmortalWrt `releases/X.Y.Z`。CI 生成 `dist
 
 | 固件设备名 | 产品型号/名称 |
 | --- | --- |
-| `8devices_mango-dvk` | 8devices Mango-DVK |
 | `alfa-network_ap120c-ax` | ALFA Network AP120C-AX |
 | `cambiumnetworks_xe3-4` | Cambium Networks XE3-4 |
 | `glinet_gl-ax1800` | GL.iNet GL-AX1800 (Flint) |
@@ -71,7 +70,6 @@ APK 源固定为该 tag 对应的 ImmortalWrt `releases/X.Y.Z`。CI 生成 `dist
 | `lg_gapd-7500` | LG GAPD-7500 |
 | `link_nn6000-v1` | LiNK NN6000 V1 |
 | `link_nn6000-v2` | LiNK NN6000 V2 |
-| `linksys_mr7350` | Linksys MR7350 |
 | `linksys_mr7500` | Linksys MR7500 |
 | `qihoo_360v6` | 360 V6 |
 | `yuncore_fap650` | YunCore FAP650 |
