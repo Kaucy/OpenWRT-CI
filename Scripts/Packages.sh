@@ -142,12 +142,13 @@ config single_module
     option duration '86400'
 EOF
 	#上游自定义 postinst 在制作镜像时不会启用服务，直接写入 rc.d 启动链接。
-	sed -i '/$(INSTALL_CONF) \.\/files\/athena_led.config/a\\\t$(INSTALL_DIR) $(1)/etc/rc.d\n\tln -sf ../init.d/athena_led $(1)/etc/rc.d/S99athena_led' "$ATHENA_MAKEFILE"
+	sed -i $'/$(INSTALL_CONF) \\.\\/files\\/athena_led.config/a\\\t$(INSTALL_DIR) $(1)/etc/rc.d\\\n\tln -sf ../init.d/athena_led $(1)/etc/rc.d/S99athena_led' "$ATHENA_MAKEFILE"
 	if ! grep -q "option enabled '1'" "$ATHENA_CONFIG" || \
 		! grep -q "option param 'timeBlink'" "$ATHENA_CONFIG" || \
 		[ "$(grep -c '^config single_module$' "$ATHENA_CONFIG")" -ne 1 ] || \
 		grep -q '^config multi_module$' "$ATHENA_CONFIG" || \
-		! grep -q 'S99athena_led' "$ATHENA_MAKEFILE"; then
+		! grep -q $'^\t$(INSTALL_DIR) $(1)/etc/rc.d' "$ATHENA_MAKEFILE" || \
+		! grep -q $'^\tln -sf ../init.d/athena_led $(1)/etc/rc.d/S99athena_led' "$ATHENA_MAKEFILE"; then
 		echo "ERROR: failed to apply Athena LED defaults"
 		exit 1
 	fi
