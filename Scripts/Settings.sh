@@ -51,8 +51,8 @@ APK_MIRROR_SCRIPT="./scripts/replace-apk-mirrors.sh"
 APK_BASE_FILES="./package/base-files/Makefile"
 cp "$GITHUB_WORKSPACE/Files/replace-apk-mirrors.sh" "$APK_MIRROR_SCRIPT"
 chmod 0755 "$APK_MIRROR_SCRIPT"
-sed -i '/VERSION_SED_SCRIPT.*distfeeds\.list/a\\\t$(TOPDIR)/scripts/replace-apk-mirrors.sh $(1)/etc/apk/repositories.d/distfeeds.list' "$APK_BASE_FILES"
-if ! grep -q 'replace-apk-mirrors.sh.*distfeeds.list' "$APK_BASE_FILES"; then
+sed -i $'/VERSION_SED_SCRIPT.*distfeeds\\.list/a\\\t$(TOPDIR)/scripts/replace-apk-mirrors.sh $(1)/etc/apk/repositories.d/distfeeds.list' "$APK_BASE_FILES"
+if ! grep -q $'^\t$(TOPDIR)/scripts/replace-apk-mirrors.sh.*distfeeds.list' "$APK_BASE_FILES"; then
 	echo "ERROR: failed to install selective APK mirror hook"
 	exit 1
 fi
